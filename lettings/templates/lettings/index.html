@@ -1,0 +1,21 @@
+<title>Lettings</title>
+<h1>Lettings</h1>
+{% if lettings_list %}
+    <ul>
+    {% for letting in lettings_list %}
+        <li>
+            {# initial version before urls namespaces #}
+            {# <a href="{% url 'letting' letting_id=letting.id %}"></a> #}
+            <a href="{% url 'lettings:letting' letting_id=letting.id %}">
+                {{ letting.title }}
+            </a>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No lettings are available.</p>
+{% endif %}
+<div><a href="{% url 'index' %}">Home</a></div>
+{# initial version before urls namespaces #}
+{# <div><a href="{% url 'profiles_index' %}">Profiles</a></div> #}
+<div><a href="{% url 'profiles:profiles_index' %}">Profiles</a></div>
