@@ -26,10 +26,12 @@ class Letting(models.Model):
     def __str__(self):
         return self.title
 
-
+"""
+Before data suppression
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='+')
     favorite_city = models.CharField(max_length=64, blank=True)
 
     def __str__(self):
         return self.user.username
+"""
