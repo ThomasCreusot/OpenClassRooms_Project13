@@ -4,10 +4,10 @@ from django.urls import path
 from . import views
 
 # version before namespaces
-#from lettings.views import index as lettings_index
-#from lettings.views import letting
-#from profiles.views import index as profiles_index
-#from profiles.views import profile
+# from lettings.views import index as lettings_index
+# from lettings.views import letting
+# from profiles.views import index as profiles_index
+# from profiles.views import profile
 
 # version with namespaces
 from django.urls import include

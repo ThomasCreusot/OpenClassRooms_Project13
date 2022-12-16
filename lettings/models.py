@@ -13,9 +13,9 @@ class Address(models.Model):
     def __str__(self):
         return f'{self.number} {self.street}'
 
-    class Meta: 
+    class Meta:
         verbose_name = "Address"
-        verbose_name_plural = "Addresses" 
+        verbose_name_plural = "Addresses"
 
 
 class Letting(models.Model):
