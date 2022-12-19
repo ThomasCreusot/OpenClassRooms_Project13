@@ -54,7 +54,7 @@ def test_profile_detail_url():
 
 @pytest.mark.django_db  
 def test_profile_list_view():
-    """Tests the view content of the page displaying profile objects in details.
+    """Tests the view content of the page displaying profile objects as a list.
     Specifications : as each website page contains a title, each test must verify it in the
     HTML answer. Response status code il also tested."""
 

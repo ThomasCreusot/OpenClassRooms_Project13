@@ -60,7 +60,7 @@ def test_letting_detail_url():
 
 @pytest.mark.django_db  
 def test_letting_list_view():
-    """Tests the view content of the page displaying letting objects in details.
+    """Tests the view content of the page displaying letting objects as a list.
     Specifications : as each website page contains a title, each test must verify it in the
     HTML answer. Response status code il also tested."""
 
@@ -89,7 +89,7 @@ def test_letting_list_view():
 
 @pytest.mark.django_db  
 def test_letting_details_view():
-    """Tests the view content of the page displaying letting objects as a list.
+    """Tests the view content of the page displaying letting objects in details.
     Specifications : as each website page contains a title, each test must verify it in the
     HTML answer. Response status code il also tested."""
 
