@@ -76,3 +76,29 @@ def test_profile_list_view():
 
     assert content.find(expected_content) != -1
     assert response.status_code == 200
+
+
+@pytest.mark.django_db  
+def test_profile_details_view():
+    """Tests the view content of the page displaying profile objects in details.
+    Specifications : as each website page contains a title, each test must verify it in the
+    HTML answer. Response status code il also tested."""
+
+    client = Client()  # Equivalent to a simplified web browser
+    user_object_for_testing = User.objects.create(
+        username = "user_username_for_testing",
+        password = "user_password_for_testing"
+    )
+
+    profile_object_for_testing = Profile.objects.create(
+        user = user_object_for_testing,
+        favorite_city = "favorite_city_for_testing"
+    )
+
+    path_profile = reverse('author-profiles:profile', current_app="author-profiles", kwargs={'username':"user_username_for_testing"})
+    response = client.get(path_profile)
+    content = response.content.decode()
+    expected_content = profile_object_for_testing.user.username
+
+    assert content.find(expected_content) != -1
+    assert response.status_code == 200
