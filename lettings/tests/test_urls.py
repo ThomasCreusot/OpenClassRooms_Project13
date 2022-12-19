@@ -85,3 +85,32 @@ def test_letting_list_view():
 
     assert content.find(expected_content) != -1
     assert response.status_code == 200
+
+
+@pytest.mark.django_db  
+def test_letting_details_view():
+    """Tests the view content of the page displaying letting objects as a list.
+    Specifications : as each website page contains a title, each test must verify it in the
+    HTML answer. Response status code il also tested."""
+
+    client = Client()  # Equivalent to a simplified web browser
+    address_object_for_testing = Address.objects.create(
+        number = 1,
+        street = "street_of_testing",
+        city = "city_of_testing",
+        state = "NY",
+        zip_code = 11554,
+        country_iso_code = "USA"
+    )
+    letting_object_for_testing = Letting.objects.create(
+        title = "letting_object_for_testing",
+        address = address_object_for_testing
+    )
+
+    path_letting = reverse('author-lettings:letting', current_app="author-lettings", kwargs={'letting_id':1})
+    response = client.get(path_letting)
+    content = response.content.decode()
+    expected_content = letting_object_for_testing.title
+
+    assert content.find(expected_content) != -1
+    assert response.status_code == 200
