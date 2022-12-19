@@ -13,13 +13,13 @@ def test_profile_list_url():
     """Tests the URL and view name of the page displaying profile objects as a list"""
 
     user_object_for_testing = User.objects.create(
-        username = "user_username_for_testing",
-        password = "user_password_for_testing"
+        username="user_username_for_testing",
+        password="user_password_for_testing"
     )
 
-    profile_object_for_testing = Profile.objects.create(
-        user = user_object_for_testing,
-        favorite_city = "favorite_city_for_testing"
+    Profile.objects.create(
+        user=user_object_for_testing,
+        favorite_city="favorite_city_for_testing"
     )
 
     # Generates the URL from the view name
@@ -35,24 +35,24 @@ def test_profile_detail_url():
     """Tests the URL and view name of the page displaying profile objects in details"""
 
     user_object_for_testing = User.objects.create(
-        username = "user_username_for_testing",
-        password = "user_password_for_testing"
+        username="user_username_for_testing",
+        password="user_password_for_testing"
     )
 
-    profile_object_for_testing = Profile.objects.create(
-        user = user_object_for_testing,
-        favorite_city = "favorite_city_for_testing"
+    Profile.objects.create(
+        user=user_object_for_testing,
+        favorite_city="favorite_city_for_testing"
     )
 
     # author-profiles : namespace in oc_lettings_site/urls.py
     # profiles is from : in urls.py : from profiles.views import profile
     # username is from: path('profiles/<str:username>/', profile, name='profile'),
-    path_profile = reverse('author-profiles:profile', current_app="author-profiles", kwargs={'username':1})
+    path_profile = reverse('author-profiles:profile', current_app="author-profiles", kwargs={'username': 1})
     assert path_profile == "/author-profiles/profiles/1/"  # checks if URL is right
     assert resolve(path_profile).view_name == "author-profiles:profile"  # checks if view name is right
 
 
-@pytest.mark.django_db  
+@pytest.mark.django_db
 def test_profile_list_view():
     """Tests the view content of the page displaying profile objects as a list.
     Specifications : as each website page contains a title, each test must verify it in the
@@ -60,13 +60,13 @@ def test_profile_list_view():
 
     client = Client()  # Equivalent to a simplified web browser
     user_object_for_testing = User.objects.create(
-        username = "user_username_for_testing",
-        password = "user_password_for_testing"
+        username="user_username_for_testing",
+        password="user_password_for_testing"
     )
 
-    profile_object_for_testing = Profile.objects.create(
-        user = user_object_for_testing,
-        favorite_city = "favorite_city_for_testing"
+    Profile.objects.create(
+        user=user_object_for_testing,
+        favorite_city="favorite_city_for_testing"
     )
 
     path_index = reverse('author-profiles:profiles_index', current_app="author-profiles")
@@ -78,7 +78,7 @@ def test_profile_list_view():
     assert response.status_code == 200
 
 
-@pytest.mark.django_db  
+@pytest.mark.django_db
 def test_profile_details_view():
     """Tests the view content of the page displaying profile objects in details.
     Specifications : as each website page contains a title, each test must verify it in the
@@ -86,16 +86,19 @@ def test_profile_details_view():
 
     client = Client()  # Equivalent to a simplified web browser
     user_object_for_testing = User.objects.create(
-        username = "user_username_for_testing",
-        password = "user_password_for_testing"
+        username="user_username_for_testing",
+        password="user_password_for_testing"
     )
 
     profile_object_for_testing = Profile.objects.create(
-        user = user_object_for_testing,
-        favorite_city = "favorite_city_for_testing"
+        user=user_object_for_testing,
+        favorite_city="favorite_city_for_testing"
     )
 
-    path_profile = reverse('author-profiles:profile', current_app="author-profiles", kwargs={'username':"user_username_for_testing"})
+    path_profile = reverse(
+        'author-profiles:profile',
+        current_app="author-profiles",
+        kwargs={'username': "user_username_for_testing"})
     response = client.get(path_profile)
     content = response.content.decode()
     expected_content = profile_object_for_testing.user.username
