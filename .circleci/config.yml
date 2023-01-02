@@ -73,7 +73,7 @@ jobs:
           #paths:
             #- .
   # https://circleci.com/docs/config-intro/
-  build:
+  build_and_test:
     docker:
       #- image: alpine:3.15
       #- image: p13-django-app_image_221227_09h10:latest # PEUT ETRE PAS CA DU TOUT, la logique est peut etre d'accéder au dockerhub avec une image ubuntu par exemple, garder du recul
@@ -140,16 +140,11 @@ jobs:
 workflows:
   build_test_deploy:
     jobs:
-      - build
+      - build_and_test
 #          filters:
 #            branches:
 #              only: main
-      - test
-          requires:
-            - build
-#          filters:
-#            branches:
-#              only: main
+
 #      - deploy:
 #          requires:
 #            #- build_and_test # only deploy if the build_and_test job has completed
