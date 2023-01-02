@@ -1,23 +1,22 @@
-"""
-Le pipeline doit être composé de :
-•	un travail de compilation et de tests qui reproduit l'environnement de développement local, 
-et exécute le linting (flake8) et la suite de tests.
 
-•	un travail de conteneurisation qui : 
-  o	construit une image du site pour Docker et la pousse vers le registre des conteneurs du Docker Hub 
-  o	tague les images avec le “hash”  de commit CircleCI,
--->La tâche de conteneurisation ne doit être exécutée que si la compilation et de test sont réussies.
+#Le pipeline doit être composé de :
+#un travail de compilation et de tests qui reproduit l'environnement de développement local, 
+#et exécute le linting (flake8) et la suite de tests.
+#un travail de conteneurisation qui : 
+#  construit une image du site pour Docker et la pousse vers le registre des conteneurs du Docker Hub 
+#  tague les images avec le “hash”  de commit CircleCI,
+#-->La tâche de conteneurisation ne doit être exécutée que si la compilation et de test sont réussies.
 
-•	un travail de déploiement pour mise en production qui met en service le site en utilisant Heroku.
--->Le travail de déploiement et de production ne doit s'exécuter que si le travail de conteneurisation est réussi.
+#un travail de déploiement pour mise en production qui met en service le site en utilisant Heroku.
+#-->Le travail de déploiement et de production ne doit s'exécuter que si le travail de conteneurisation est réussi.
 
-Note : 
-Configurez le déploiement de manière à ce que seules les modifications apportées à la branche master dans GitHub déclenchent la conteneurisation et le déploiement du site vers Heroku.
--->dans fichier heroku ?
+#Note : 
+#Configurez le déploiement de manière à ce que seules les modifications apportées à la branche master dans GitHub déclenchent la conteneurisation et le déploiement du site vers Heroku.
+#-->dans fichier heroku ?
 
-Note : 
-Les modifications apportées aux autres branches doivent uniquement déclencher la compilation et les tests (sans déployer le site vers Heroku ou effectuer la conteneurisation).
-"""
+#Note : 
+#Les modifications apportées aux autres branches doivent uniquement déclencher la compilation et les tests (sans déployer le site vers Heroku ou effectuer la conteneurisation).
+
 
 # Ressources: 
 # https://circleci.com/docs/language-python/
@@ -125,14 +124,14 @@ jobs:
   # test:
   # ressource TO BE DONE: https://support.circleci.com/hc/en-us/articles/360048786831-Use-test-splitting-with-Python-Django-tests
 
-"""
-  deploy:
-    executor: heroku/default # use the default executor defined within the orb
-    steps:
-      - attach_workspace:
-          at: ~/project
-      - heroku/deploy-via-git:
-          force: true # force push when pushing to the heroku remote, see: https://devcenter.heroku.com/articles/git
+
+#  deploy:
+#    executor: heroku/default # use the default executor defined within the orb
+#    steps:
+#      - attach_workspace:
+#          at: ~/project
+#      - heroku/deploy-via-git:
+#          force: true # force push when pushing to the heroku remote, see: https://devcenter.heroku.com/articles/git
 
 # A workflow is a set of rules for defining a collection of jobs and their run order. Workflows
 # support complex job orchestration using a set of configuration keys to help you resolve failures
@@ -142,22 +141,22 @@ workflows:
   build_test_deploy:
     jobs:
       - build
-          filters:
-            branches:
-              only: main
+#          filters:
+#            branches:
+#              only: main
       - test
           requires:
             - build
-          filters:
-            branches:
-              only: main
-      - deploy:
-          requires:
-            #- build_and_test # only deploy if the build_and_test job has completed
-            - test # only deploy if the build_and_test job has completed
-          filters:
-            branches:
-              only: main # only deploy when on main
+#          filters:
+#            branches:
+#              only: main
+#      - deploy:
+#          requires:
+#            #- build_and_test # only deploy if the build_and_test job has completed
+#            - test # only deploy if the build_and_test job has completed
+#          filters:
+#            branches:
+#              only: main # only deploy when on main
 
 
 
