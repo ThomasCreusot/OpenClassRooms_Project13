@@ -115,9 +115,11 @@ jobs:
 
       - run:
           name: Running tests
+          #replacement of 'python3 manage.py test' by 'pytest -s --no-migrations'
           command: |
             . venv/bin/activate
-            python3 manage.py test
+            pytest -s --no-migrations
+
 
       - store_artifacts:  # This command stores logs, binaries, etc. so that they are accessible by the app in later runs.
           path: test-reports/
