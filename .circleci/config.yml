@@ -83,7 +83,8 @@ jobs:
       #    username: mydockerhub-user
       #    password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
       # https://circleci.com/blog/continuous-integration-for-django-projects/
-      - image: circleci/python:3.6
+      # - image: circleci/python:3.6
+      - image: circleci/python:3.10  # version on my computer + as https://pypi.org/project/asgiref/  asgiref requires Python 3.7 or higher.
 
     steps:
       # https://circleci.com/blog/continuous-integration-for-django-projects/
