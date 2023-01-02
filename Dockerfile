@@ -71,4 +71,3 @@ CMD ["python", "manage.py" , "runserver", "0.0.0.0:8000"]
 # docker images
 # docker run --publish 8000:8000 p13-django-app_image_221227_09h10:latest
 # curl localhost:8000
-

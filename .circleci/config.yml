@@ -1,0 +1,167 @@
+"""
+Le pipeline doit être composé de :
+•	un travail de compilation et de tests qui reproduit l'environnement de développement local, 
+et exécute le linting (flake8) et la suite de tests.
+
+•	un travail de conteneurisation qui : 
+  o	construit une image du site pour Docker et la pousse vers le registre des conteneurs du Docker Hub 
+  o	tague les images avec le “hash”  de commit CircleCI,
+-->La tâche de conteneurisation ne doit être exécutée que si la compilation et de test sont réussies.
+
+•	un travail de déploiement pour mise en production qui met en service le site en utilisant Heroku.
+-->Le travail de déploiement et de production ne doit s'exécuter que si le travail de conteneurisation est réussi.
+
+Note : 
+Configurez le déploiement de manière à ce que seules les modifications apportées à la branche master dans GitHub déclenchent la conteneurisation et le déploiement du site vers Heroku.
+-->dans fichier heroku ?
+
+Note : 
+Les modifications apportées aux autres branches doivent uniquement déclencher la compilation et les tests (sans déployer le site vers Heroku ou effectuer la conteneurisation).
+"""
+
+# Ressources: 
+# https://circleci.com/docs/language-python/
+# https://circleci.com/blog/continuous-integration-for-django-projects/
+# https://circleci.com/docs/config-intro/
+
+
+# https://circleci.com/docs/language-python/ In this quickstart guide, we will deploy to Heroku
+# Every CircleCI config.yml starts with the version key. This key is used to issue warnings about
+# breaking changes.
+version: 2.1
+
+# https://circleci.com/docs/language-python/
+# The Python orb contains a set of prepackaged CircleCI configurations you can use to do common
+# CircleCI tasks for the Python programming language.
+# https://circleci.com/docs/concepts/#orbs
+# Orbs are reusable snippets of code that help automate repeated processes, accelerate project
+# setup, and make it easy to integrate with third-party tools. 
+
+#No orbs in https://circleci.com/blog/continuous-integration-for-django-projects/
+orbs:
+  python: circleci/python@2.1.1  # No orb found for django
+  heroku: circleci/heroku@2.0.0
+
+# https://circleci.com/docs/language-python/
+# Jobs are the building blocks of your config. Jobs are collections of steps, which run
+# commands/scripts as required. 
+# https://circleci.com/docs/concepts/#jobs
+# Each job must declare an executor that is either docker, machine, windows, or macos. For docker
+# you must specify an image to use for the primary container. For macos you must specify an Xcode
+# version. For windows you must use the Windows orb.
+# A common ask from developers who are getting started with CircleCI is to perform three basic
+# tasks: build, test and deploy
+# https://circleci.com/docs/config-intro/
+# By separating those steps into jobs, you can run each of them in a different environment.
+
+
+jobs:
+  # https://circleci.com/docs/language-python/ 
+  # For this step, we are using the python/install-packages command that comes from the Python orb.
+  # This command automatically sets up a python environment and installs the packages for your
+  # project either globally with pip or in a virtualenv with poetry or pipenv.
+  # build_and_test:
+    #executor: python/default # use the default executor defined within the orb
+    #steps:
+      #- checkout # checkout source code
+      #- python/install-packages:
+          #pkg-manager: pip
+      #- run:
+          #name: Run tests
+          #command: python -m pytest #PERSO : add without migration ???
+      #- persist_to_workspace:
+          #root: ~/project
+          #paths:
+            #- .
+  # https://circleci.com/docs/config-intro/
+  build:
+    docker:
+      #- image: alpine:3.15
+      #- image: p13-django-app_image_221227_09h10:latest # PEUT ETRE PAS CA DU TOUT, la logique est peut etre d'accéder au dockerhub avec une image ubuntu par exemple, garder du recul
+      #- image: cimg/base:2022.09 # cimg/base is an Ubuntu Docker image created by CircleCI with continuous integration builds in mind. As its name suggests, this image is designed to serve as a base image for other CircleCI Convenience Images (images prefixed with cimg/).
+      #  auth:
+      #    # TO BE DONE https://circleci.com/docs/private-images/
+      #    username: mydockerhub-user
+      #    password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+      # https://circleci.com/blog/continuous-integration-for-django-projects/
+      - image: circleci/python:3.6
+
+    steps:
+      # https://circleci.com/blog/continuous-integration-for-django-projects/
+      - checkout  # This command fetches your source code over SSH to the configured path (the working directory, by default).
+      - restore_cache:  # This command restores a previously saved cache
+          key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
+      - run:
+          name: The First Step
+          # list of shell commands that you want to execute. The initial pipe, |, indicates there
+          # will be multiple lines of shell commands.
+          # examples of commands:
+          # echo 'Hello World!' --> prints 'Hello World!'
+          # node -v --> prints the version of Node running in the container.
+          # ls -al --> lists all repo files
+
+          # https://circleci.com/blog/continuous-integration-for-django-projects/
+          command: |
+            echo 'Hello World!'
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+
+      - save_cache:  # This command generates and saves a cache of a file, multiple files, or folders. In our case, we save a cache of the installed Python packages obtained after running pip install ….
+          key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
+          paths:
+            - "venv"
+
+      - run:
+          name: Running tests
+          command: |
+            . venv/bin/activate
+            python3 manage.py test
+
+      - store_artifacts:  # This command stores logs, binaries, etc. so that they are accessible by the app in later runs.
+          path: test-reports/
+          destination: python_app
+
+  # test:
+  # ressource TO BE DONE: https://support.circleci.com/hc/en-us/articles/360048786831-Use-test-splitting-with-Python-Django-tests
+
+"""
+  deploy:
+    executor: heroku/default # use the default executor defined within the orb
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - heroku/deploy-via-git:
+          force: true # force push when pushing to the heroku remote, see: https://devcenter.heroku.com/articles/git
+
+# A workflow is a set of rules for defining a collection of jobs and their run order. Workflows
+# support complex job orchestration using a set of configuration keys to help you resolve failures
+# sooner. Inside the workflow, you define the jobs you want to run. CircleCI will run this workflow
+# on every commit.
+workflows:
+  build_test_deploy:
+    jobs:
+      - build
+          filters:
+            branches:
+              only: main
+      - test
+          requires:
+            - build
+          filters:
+            branches:
+              only: main
+      - deploy:
+          requires:
+            #- build_and_test # only deploy if the build_and_test job has completed
+            - test # only deploy if the build_and_test job has completed
+          filters:
+            branches:
+              only: main # only deploy when on main
+
+
+
+# NOTES FOR THE END :
+# command: python -m pytest #PERSO : add without migration ???
+# Environment variables containing the necessary secrets such as HEROKU_API_KEY and HEROKU_APP_NAME can be set up in the CircleCI web app. Learn more about environment variables. { class=”alert alert-info” }
+"""
