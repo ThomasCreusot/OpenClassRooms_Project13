@@ -104,6 +104,7 @@ jobs:
             echo 'Hello World!'
             python3 -m venv venv
             . venv/bin/activate
+            pip install --upgrade pip
             pip install -r requirements.txt
 
       - save_cache:  # This command generates and saves a cache of a file, multiple files, or folders. In our case, we save a cache of the installed Python packages obtained after running pip install ….
