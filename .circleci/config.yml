@@ -163,4 +163,3 @@ workflows:
 # NOTES FOR THE END :
 # command: python -m pytest #PERSO : add without migration ???
 # Environment variables containing the necessary secrets such as HEROKU_API_KEY and HEROKU_APP_NAME can be set up in the CircleCI web app. Learn more about environment variables. { class=”alert alert-info” }
-"""
