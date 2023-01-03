@@ -118,7 +118,7 @@ jobs:
           #replacement of 'python3 manage.py test' by 'pytest -s --no-migrations'
           command: |
             . venv/bin/activate
-            pytest -s --no-migrations
+            pytest -s --no-migrations --ignore=env
 
 
       - store_artifacts:  # This command stores logs, binaries, etc. so that they are accessible by the app in later runs.
