@@ -160,12 +160,15 @@ jobs:
             echo 'Hello World!'
             echo $CIRCLE_BUILD_NUM
             echo $DOCKERHUB_USERNAME
+            echo $DOCKER_USER
+            echo $DOCKER_PASS 
+            echo $DOCKER_USER 
 
-      #- run: |
-      #    TAG=0.1.$CIRCLE_BUILD_NUM
-      #    docker build -t $DOCKERHUB_USERNAME/p13-django-app_image_221227_09h10:$TAG .
-      #    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-      #    docker push $DOCKERHUB_USERNAME/p13-django-app_image_221227_09h10:$TAG
+      - run: |
+          TAG=0.1.$CIRCLE_BUILD_NUM
+          docker build -t $DOCKERHUB_USERNAME/p13-django-app_image_221227_09h10:$TAG .
+          echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+          docker push $DOCKERHUB_USERNAME/p13-django-app_image_221227_09h10:$TAG
       
       # before try : create environnement variable in circleu CI : 
       # $DOCKERHUB_PASSWORD 
