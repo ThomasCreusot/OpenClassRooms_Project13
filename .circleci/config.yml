@@ -137,7 +137,8 @@ jobs:
   # https://circleci.com/docs/building-docker-images/#run-docker-commands-using-the-docker-executor
   build_docker_with_docker_executor:
     docker:
-      - image: cimg/go:1.17
+      #- image: cimg/go:1.17 -> does not work for echo
+      - image: cimg/python:3.10
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
