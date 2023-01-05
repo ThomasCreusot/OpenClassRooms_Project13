@@ -207,8 +207,7 @@ workflows:
 #            branches:
 #              only: main
       - build_docker_with_docker_executor
-          requires:
-            - build_and_test # only push docker if the build_and_test job has completed
+
 
 #      - deploy:
 #          requires:
