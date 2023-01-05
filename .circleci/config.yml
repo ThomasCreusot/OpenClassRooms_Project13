@@ -113,15 +113,15 @@ jobs:
             - "venv"
 
       - run:
-          name: Running linter
-          command: flake8 --max-line-length 119 --exclude env
-
-      - run:
           name: Running tests
           #replacement of 'python3 manage.py test' by 'pytest -s --no-migrations'
           command: |
             . venv/bin/activate
             pytest -s --no-migrations --ignore=env
+
+      - run:
+          name: Running linter
+          command: flake8 --max-line-length 119 --exclude env
 
       - store_artifacts:  # This command stores logs, binaries, etc. so that they are accessible by the app in later runs.
           path: test-reports/
