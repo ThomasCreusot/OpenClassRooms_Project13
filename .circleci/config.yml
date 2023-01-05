@@ -125,6 +125,12 @@ jobs:
           path: test-reports/
           destination: python_app
 
+      # https://circleci.com/docs/language-python/ ; https://circleci.com/docs/workspaces/
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - .
+
   # test:
   # ressource TO BE DONE: https://support.circleci.com/hc/en-us/articles/360048786831-Use-test-splitting-with-Python-Django-tests
 
@@ -136,6 +142,21 @@ jobs:
 #          at: ~/project
 #      - heroku/deploy-via-git:
 #          force: true # force push when pushing to the heroku remote, see: https://devcenter.heroku.com/articles/git
+
+  #https://circleci.com/docs/deploy-to-heroku/
+  #version: 2.1
+  #orbs:
+  #  heroku: circleci/heroku@x.y
+  #workflows:
+  #  heroku_deploy:
+  #    jobs:
+  #      - heroku/deploy-via-git:
+  #          post-steps:
+  #            - run: your-database-migration-command #example of a post-deployment step
+  #          pre-steps:
+  #            - run: command-that-run-before-deploying #example of a pre-deployment step
+
+
 
 # A workflow is a set of rules for defining a collection of jobs and their run order. Workflows
 # support complex job orchestration using a set of configuration keys to help you resolve failures
@@ -149,16 +170,14 @@ workflows:
 #            branches:
 #              only: main
 
-#      - deploy:
-#          requires:
-#            #- build_and_test # only deploy if the build_and_test job has completed
-#            - test # only deploy if the build_and_test job has completed
-#          filters:
-#            branches:
-#              only: main # only deploy when on main
+      - deploy:
+          requires:
+            - build_and_test # only deploy if the build_and_test job has completed
+          filters:
+            branches:
+              only: main # only deploy when on main
 
 
 
 # NOTES FOR THE END :
-# command: python -m pytest #PERSO : add without migration ???
 # Environment variables containing the necessary secrets such as HEROKU_API_KEY and HEROKU_APP_NAME can be set up in the CircleCI web app. Learn more about environment variables. { class=”alert alert-info” }
