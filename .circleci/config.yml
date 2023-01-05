@@ -92,7 +92,7 @@ jobs:
       - restore_cache:  # This command restores a previously saved cache
           key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
       - run:
-          name: The First Step
+          name: Virtual environment creation and requirements installation
           # list of shell commands that you want to execute. The initial pipe, |, indicates there
           # will be multiple lines of shell commands.
           # examples of commands:
@@ -102,7 +102,6 @@ jobs:
 
           # https://circleci.com/blog/continuous-integration-for-django-projects/
           command: |
-            echo 'Hello World!'
             python3 -m venv venv
             . venv/bin/activate
             pip install --upgrade pip
@@ -114,12 +113,15 @@ jobs:
             - "venv"
 
       - run:
+          name: Running linter
+          command: flake8 --max-line-length 119 --exclude env
+
+      - run:
           name: Running tests
           #replacement of 'python3 manage.py test' by 'pytest -s --no-migrations'
           command: |
             . venv/bin/activate
             pytest -s --no-migrations --ignore=env
-
 
       - store_artifacts:  # This command stores logs, binaries, etc. so that they are accessible by the app in later runs.
           path: test-reports/
@@ -131,9 +133,44 @@ jobs:
           paths:
             - .
 
-  # test:
-  # ressource TO BE DONE: https://support.circleci.com/hc/en-us/articles/360048786831-Use-test-splitting-with-Python-Django-tests
 
+  # https://circleci.com/docs/building-docker-images/#run-docker-commands-using-the-docker-executor
+  build_docker_with_docker_executor:
+    docker:
+      - image: cimg/go:1.17
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+    steps:
+      - checkout
+      # ... steps for building/testing app ...
+      #ALREADY DONE; TO BE DONE AGAIN ?
+
+      - setup_remote_docker:
+          version: 20.10.14
+          # We enable Docker Layer Caching (DLC) here to speed up image building.
+          docker_layer_caching: true
+
+      # build and push Docker image
+      - run : 
+          name: checking environment variables
+          #replacement of 'python3 manage.py test' by 'pytest -s --no-migrations'
+          command: |
+            command :echo 'Hello World!'
+            command :echo $CIRCLE_BUILD_NUM
+            command :echo $DOCKERHUB_USERNAME
+
+      #- run: |
+      #    TAG=0.1.$CIRCLE_BUILD_NUM
+      #    docker build -t $DOCKERHUB_USERNAME/p13-django-app_image_221227_09h10:$TAG .
+      #    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+      #    docker push $DOCKERHUB_USERNAME/p13-django-app_image_221227_09h10:$TAG
+      
+      # before try : create environnement variable in circleu CI : 
+      # $DOCKERHUB_PASSWORD 
+      # $DOCKERHUB_USERNAME
+      # si pb de connexion essayer : 
+      # docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_PASSWORD
 
 #  deploy:
 #    executor: heroku/default # use the default executor defined within the orb
@@ -169,6 +206,10 @@ workflows:
 #          filters:
 #            branches:
 #              only: main
+
+      - build_docker_with_docker_executor
+          requires:
+            - build_and_test # only push docker if the build_and_test job has completed
 
 #      - deploy:
 #          requires:
