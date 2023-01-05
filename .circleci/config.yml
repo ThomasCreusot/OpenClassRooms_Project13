@@ -157,9 +157,9 @@ jobs:
           name: checking environment variables
           #replacement of 'python3 manage.py test' by 'pytest -s --no-migrations'
           command: |
-            command :echo 'Hello World!'
-            command :echo $CIRCLE_BUILD_NUM
-            command :echo $DOCKERHUB_USERNAME
+            echo 'Hello World!'
+            echo $CIRCLE_BUILD_NUM
+            echo $DOCKERHUB_USERNAME
 
       #- run: |
       #    TAG=0.1.$CIRCLE_BUILD_NUM
