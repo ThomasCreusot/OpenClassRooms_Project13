@@ -138,7 +138,7 @@ jobs:
 
 
   # https://circleci.com/docs/building-docker-images/#run-docker-commands-using-the-docker-executor
-  build_docker_with_docker_executor:
+  build_docker:
     docker:
       #- image: cimg/go:1.17 -> does not work for echo
       - image: cimg/python:3.10
@@ -225,10 +225,7 @@ workflows:
   build_test_deploy:
     jobs:
       - build_and_test
-#          filters:
-#            branches:
-#              only: main
-      - build_docker_with_docker_executor
+      - build_docker
         requires:
           - build_and_test # only deploy if the build_and_test job has completed
 
