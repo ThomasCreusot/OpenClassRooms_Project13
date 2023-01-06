@@ -226,8 +226,8 @@ workflows:
     jobs:
       - build_and_test
       - build_docker
-        requires:
-          - build_and_test # only deploy if the build_and_test job has completed
+          requires:
+            - build_and_test # only deploy if the build_and_test job has completed
 
 #      - deploy:
 #          requires:
