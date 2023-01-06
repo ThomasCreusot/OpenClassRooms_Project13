@@ -121,7 +121,9 @@ jobs:
 
       - run:
           name: Running linter
-          command: flake8 --max-line-length 119 --exclude env
+          command: |
+            . venv/bin/activate
+            flake8 --max-line-length 119 --exclude env
 
       - store_artifacts:  # This command stores logs, binaries, etc. so that they are accessible by the app in later runs.
           path: test-reports/
