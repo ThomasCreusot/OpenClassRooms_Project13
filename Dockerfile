@@ -56,7 +56,14 @@ COPY . /app
 #CMD python manage.py runserver 0.0.0.0:8000
 #CMD python manage.py runserver 0.0.0.0:$PORT
 
-CMD ["python", "manage.py" , "runserver", "0.0.0.0:8000"]
+# initial code for local
+# CMD ["python", "manage.py" , "runserver", "0.0.0.0:8000"]
+# first attempt for online deployment
+# ENV PORT=8000
+# CMD python manage.py runserver 0.0.0.0:$PORT
+# second attempt for online deployment
+ENV PORT=8000
+CMD gunicorn oc_lettings_site.wsgi --bind 0.0.0.0:$PORT 
 
 # https://hub.docker.com/_/python You can then build and run the Docker image:
 # $ docker build -t my-python-app .
