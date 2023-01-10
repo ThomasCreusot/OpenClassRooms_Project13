@@ -253,6 +253,13 @@ jobs:
           name: Login to DockerHub
           command: docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_PASSWORD
 
+      - run:
+          name: Install Heroku CLI
+          command: |
+            curl https://cli-assets.heroku.com/install.sh | sh
+            echo $HEROKU_API_KEY
+            echo $HEROKU_APP_NAME
+
       - run: heroku container:login --api-key $HEROKU_API_KEY
 
       - run:
