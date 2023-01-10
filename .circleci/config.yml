@@ -260,7 +260,10 @@ jobs:
             echo $HEROKU_API_KEY
             echo $HEROKU_APP_NAME
 
-      - run: heroku container:login --api-key $HEROKU_API_KEY
+      #- run: heroku container:login --api-key $HEROKU_API_KEY  # --> Error: Unexpected arguments: --api-key, 
+      - run: heroku container:login
+      # docker login --username=_ --password=$(heroku auth:token) registry.heroku.com
+      #- run: docker login --username=$HEROKU_USERNAME --password=$($HEROKU_API_KEY) registry.heroku.com
 
       - run:
           # To push an image to Heroku, such as one pulled from Docker Hub, tag it and push it according to this naming template:
