@@ -235,7 +235,13 @@ jobs:
     #
     docker:
       - image: cimg/python:3.10
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
     steps:
+      - run:
+          name: Login to DockerHub
+          command: docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_PASSWORD
       - run:
           # To push an image to Heroku, such as one pulled from Docker Hub, tag it and push it according to this naming template:
           # docker tag <image> registry.heroku.com/<app>/<process-type>
