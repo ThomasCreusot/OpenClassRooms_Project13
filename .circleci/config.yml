@@ -55,25 +55,6 @@ orbs:
 
 
 jobs:
-  # https://circleci.com/docs/language-python/ 
-  # For this step, we are using the python/install-packages command that comes from the Python orb.
-  # This command automatically sets up a python environment and installs the packages for your
-  # project either globally with pip or in a virtualenv with poetry or pipenv.
-  # build_and_test:
-  #  #executor: python/default # use the default executor defined within the orb
-  #  #steps:
-  #    #- checkout # checkout source code
-  #    #- python/install-packages:
-  #        #pkg-manager: pip
-  #    #- run:
-  #        #name: Run tests
-  #        #command: python -m pytest #PERSO : add without migration ???
-  #    #- persist_to_workspace:
-  #        #root: ~/project
-  #        #paths:
-  #          #- .
-  #
-  # https://circleci.com/docs/config-intro/
   build_and_test:
     docker:
       #- image: alpine:3.15
