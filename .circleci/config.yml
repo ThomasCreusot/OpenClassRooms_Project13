@@ -194,27 +194,52 @@ jobs:
       #    docker push $DOCKERHUB_USERNAME/p13-django-app_image_221227_09h10:$TAG
       
 
-#  deploy:
-#    executor: heroku/default # use the default executor defined within the orb
-#    steps:
-#      - attach_workspace:
-#          at: ~/project
-#      - heroku/deploy-via-git:
-#          force: true # force push when pushing to the heroku remote, see: https://devcenter.heroku.com/articles/git
+  deploy_on_heroku:
+    # We do not deploy via git but with a docker image
+    # executor: heroku/default # use the default executor defined within the orb
+    # steps:
+    #  - attach_workspace:
+    #      at: ~/project
+    #  - heroku/deploy-via-git:
+    #      force: true # force push when pushing to the heroku remote, see: https://devcenter.heroku.com/articles/git
 
-  #https://circleci.com/docs/deploy-to-heroku/
-  #version: 2.1
-  #orbs:
-  #  heroku: circleci/heroku@x.y
-  #workflows:
-  #  heroku_deploy:
-  #    jobs:
-  #      - heroku/deploy-via-git:
-  #          post-steps:
-  #            - run: your-database-migration-command #example of a post-deployment step
-  #          pre-steps:
-  #            - run: command-that-run-before-deploying #example of a pre-deployment step
+    #https://circleci.com/docs/deploy-to-heroku/
+    #version: 2.1
+    #orbs:
+    #  heroku: circleci/heroku@x.y
+    #workflows:
+    #  heroku_deploy:
+    #    jobs:
+    #      - heroku/deploy-via-git:
+    #          post-steps:
+    #            - run: your-database-migration-command #example of a post-deployment step
+    #          pre-steps:
+    #            - run: command-that-run-before-deploying #example of a pre-deployment step
 
+
+    # Commandes utilisées pour le DEPLOIEMENT MANUEL: 'avec oc-lettings-tc' le nom de l'application HEROKU
+    # docker build -t registry.heroku.com/oc-lettings-tc/web .
+    # docker push registry.heroku.com/oc-lettings-tc/web
+    # heroku container:release web -a oc-lettings-tc
+
+
+    # https://devcenter.heroku.com/articles/container-registry-and-runtime#logging-in-to-the-registry
+
+    # If you are using a third party CI/CD platform, you can push images to the registry. First authenticate with the following information:
+    #   Registry URL: registry.heroku.com
+    #   Username: your Heroku email address
+    #   Email: your Heroku email address
+    #   Password: your Heroku API key
+
+    # To push an image to Heroku, such as one pulled from Docker Hub, tag it and push it according to this naming template:
+    # docker tag <image> registry.heroku.com/<app>/<process-type>
+    # docker push registry.heroku.com/<app>/<process-type>
+    docker tag p13-django-app_image_06012023_10h45 registry.heroku.com/oc-lettings-tc/web
+    docker push registry.heroku.com/oc-lettings-tc/web
+    # After you’ve successfully pushed an image to Container Registry, you can create a new release using:
+    heroku container:release web
+
+    # but how to pull an image from dockerhub ?
 
 
 # A workflow is a set of rules for defining a collection of jobs and their run order. Workflows
@@ -229,9 +254,9 @@ workflows:
           requires:
             - build_and_test # only deploy if the build_and_test job has completed
 
-#      - deploy:
-#          requires:
-#            - build_and_test # only deploy if the build_and_test job has completed
+      - deploy_on_heroku:
+          requires:
+            - build_docker
 #          filters:
 #            branches:
 #              only: main # only deploy when on main
