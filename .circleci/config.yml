@@ -239,8 +239,10 @@ jobs:
           # docker tag <image> registry.heroku.com/<app>/<process-type>
           # docker push registry.heroku.com/<app>/<process-type>
           command: docker tag p13-django-app_image_06012023_10h45 registry.heroku.com/oc-lettings-tc/web
+      - run:
           command: docker push registry.heroku.com/oc-lettings-tc/web
           # After you’ve successfully pushed an image to Container Registry, you can create a new release using:
+      - run:
           command: heroku container:release web
 
 
