@@ -1,3 +1,11 @@
+Note: The present project is the thirteenth one of the training course *Python Application Developer*, offered by OpenClassRooms and aims to *Scale a Django application using a modular architecture*.
+The main goals of the project are to:
+- Reduce various technical liabilities on the project;
+- Redesign the modular architecture
+- Add a CI/CD pipeline using CircleCI and Heroku
+- Monitor the application and track errors via Sentry
+The present README was originally writen by the OpenClassRooms school; only the "Deployment" section was written by the student.
+
 ## Résumé
 
 Site web d'Orange County Lettings
@@ -75,3 +83,40 @@ Utilisation de PowerShell, comme ci-dessus sauf :
 
 - Pour activer l'environnement virtuel, `.\venv\Scripts\Activate.ps1` 
 - Remplacer `which <my-command>` par `(Get-Command <my-command>).Path`
+
+## Déploiement
+
+### Récapitulatif haut niveau du fonctionnement du déploiement
+
+Le déploiement du code et de son environnement (sous forme d'une image Docker) sur Heroku est automatisé via le pipeline circleCI, décrit dans le fichier config.yml.
+Ce déploiement automatique se fait lorsque le code modifié est "push" vers github (branche master, uniquement)
+
+Le déploiement peut également se faire manuellement (voir texte ci-dessous)
+
+### Configuration requise pour le déploiement
+
+Pour un déploiement manuel :
+- Un compte Docker
+- docker CLI installée
+- Un compte heroku et une application Heroku
+- heroku CLI installée (sinon remplacez la commande `heroku container:login` par `docker login --username=$HEROKU_USERNAME --password=$($HEROKU_API_KEY) registry.heroku.com`) lors de l'authentification pour le déploiement
+- Un compte circleCI
+
+### Étapes nécessaires au déploiement
+
+- Dans les parametres du projet circleCI, configurez les variables d'envionnement (project settings/environment variables) suivantes:
+  - $DOCKERHUB_USERNAME : le nom d'utilisateur de votre compte dockerhub
+  - $DOCKERHUB_PASSWORD : votre mot de passe DockerHub
+  - $HEROKU_USERNAME : le nom d'utilisateur de votre compte heroku
+  - $HEROKU_API_KEY : votre token Heroku, vous pouvez l'obtenir avec la commande `heroku auth:token`
+  - $HEROKU_APP_NAME : le nom de votre application heroku
+  - $DJANGO_APP_DOCKER_IMAGE_NAME : le nom que vous souhaitez donner à votre image docker
+
+Dans le terminal, executez les commandes suivantes :
+- Créez une image Docker avec la commande `docker build -t NOM_IMAGE .` (n'oubliez pas le point en fin de commande)
+- optionnel : vous pouvez tester le bon fonctionnement de l'application en local avec la commande `docker run --publish 8000:8000 NOM_IMAGE:latest`, l'adresse à visiter devrait s'afficher dans votre terminal
+- Authentifiez vous avec `heroku container:login`
+- `docker build -t registry.heroku.com/NOM_APPLICATION_HEROKU/web .` (n'oubliez pas le point en fin de commande)
+- `docker push registry.heroku.com/NOM_APPLICATION_HEROKU/web`
+- `heroku container:release web -a NOM_APPLICATION_HEROKU`
+- optionnel : vous pouvez tester le bon fonctionnement de l'application déployée avec : `heroku open`

@@ -176,16 +176,16 @@ jobs:
 
       - run:
           name: Build docker image
-          command: docker build -t p13-django-app_image_06012023_10h45 .
+          command: docker build -t $DJANGO_APP_DOCKER_IMAGE_NAME .
       - run:
           name: Login to DockerHub
           command: docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_PASSWORD
       - run:
           name: Tag docker image for DockerHub
-          command: docker tag p13-django-app_image_06012023_10h45 $DOCKERHUB_USERNAME/p13-django-app_image_06012023_10h45:$CIRCLE_BUILD_NUM
+          command: docker tag $DJANGO_APP_DOCKER_IMAGE_NAME $DOCKERHUB_USERNAME/$DJANGO_APP_DOCKER_IMAGE_NAME:$CIRCLE_BUILD_NUM
       - run:
           name: push docker image to Dockerhub
-          command: docker push $DOCKERHUB_USERNAME/p13-django-app_image_06012023_10h45:$CIRCLE_BUILD_NUM
+          command: docker push $DOCKERHUB_USERNAME/$DJANGO_APP_DOCKER_IMAGE_NAME:$CIRCLE_BUILD_NUM
       
       # initial code : (what are $DOCKER_USER and $DOCKER_PASS)
       #- run: |
@@ -253,25 +253,25 @@ jobs:
           name: Login to DockerHub
           command: docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_PASSWORD
 
-      - run:
-          name: Install Heroku CLI
-          command: |
-            curl https://cli-assets.heroku.com/install.sh | sh
-            echo $HEROKU_API_KEY
-            echo $HEROKU_APP_NAME
+      #- run:
+      #    name: Install Heroku CLI
+      #    command: |
+      #      curl https://cli-assets.heroku.com/install.sh | sh
+      #      echo $HEROKU_API_KEY
+      #      echo $HEROKU_APP_NAME
 
       #- run: heroku container:login --api-key $HEROKU_API_KEY  # --> Error: Unexpected arguments: --api-key, 
-      - run: heroku container:login
+      #- run: heroku container:login
       # docker login --username=_ --password=$(heroku auth:token) registry.heroku.com
-      #- run: docker login --username=$HEROKU_USERNAME --password=$($HEROKU_API_KEY) registry.heroku.com
+      - run: docker login --username=$HEROKU_USERNAME --password=$($HEROKU_API_KEY) registry.heroku.com
 
       - run:
           # To push an image to Heroku, such as one pulled from Docker Hub, tag it and push it according to this naming template:
           # docker tag <image> registry.heroku.com/<app>/<process-type>
           # docker push registry.heroku.com/<app>/<process-type>
-          command: docker tag p13-django-app_image_06012023_10h45 registry.heroku.com/oc-lettings-tc/web
+          command: docker tag $DJANGO_APP_DOCKER_IMAGE_NAME registry.heroku.com/$HEROKU_APP_NAME/web
       - run:
-          command: docker push registry.heroku.com/oc-lettings-tc/web
+          command: docker push registry.heroku.com/$HEROKU_APP_NAME/web
           # After you’ve successfully pushed an image to Container Registry, you can create a new release using:
       - run:
           #command: heroku container:release web
