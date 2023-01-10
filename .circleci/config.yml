@@ -233,6 +233,8 @@ jobs:
     #   Password: your Heroku API key
     #
     #
+    docker:
+      - image: cimg/python:3.10
     steps:
       - run:
           # To push an image to Heroku, such as one pulled from Docker Hub, tag it and push it according to this naming template:
