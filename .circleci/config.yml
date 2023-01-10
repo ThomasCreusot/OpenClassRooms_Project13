@@ -277,6 +277,9 @@ jobs:
           #command: heroku container:release web
           command: heroku container:release web --app $HEROKU_APP_NAME
 
+      # works with install heroku CLI + heroku container:login
+      # iw curious about using #run: docker login --username=$HEROKU_USERNAME --password=$($HEROKU_API_KEY) registry.heroku.com and not installing heroku CLI
+
 
 # A workflow is a set of rules for defining a collection of jobs and their run order. Workflows
 # support complex job orchestration using a set of configuration keys to help you resolve failures
