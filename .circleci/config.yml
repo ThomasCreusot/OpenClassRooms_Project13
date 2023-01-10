@@ -235,7 +235,7 @@ jobs:
     #
     steps:
       - run:
-      # To push an image to Heroku, such as one pulled from Docker Hub, tag it and push it according to this naming template:
+          # To push an image to Heroku, such as one pulled from Docker Hub, tag it and push it according to this naming template:
           # docker tag <image> registry.heroku.com/<app>/<process-type>
           # docker push registry.heroku.com/<app>/<process-type>
           command: docker tag p13-django-app_image_06012023_10h45 registry.heroku.com/oc-lettings-tc/web
