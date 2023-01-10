@@ -252,6 +252,17 @@ jobs:
       - run:
           name: Login to DockerHub
           command: docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_PASSWORD
+
+
+     - run:
+          name: Install Heroku CLI
+          command: |
+            curl https://cli-assets.heroku.com/install.sh | sh
+            echo $HEROKU_API_KEY
+            echo $HEROKU_APP_NAME
+
+      - run: heroku container:login --api-key $HEROKU_API_KEY
+
       - run:
           # To push an image to Heroku, such as one pulled from Docker Hub, tag it and push it according to this naming template:
           # docker tag <image> registry.heroku.com/<app>/<process-type>
@@ -261,7 +272,8 @@ jobs:
           command: docker push registry.heroku.com/oc-lettings-tc/web
           # After you’ve successfully pushed an image to Container Registry, you can create a new release using:
       - run:
-          command: heroku container:release web
+          #command: heroku container:release web
+          command: heroku container:release web --app $HEROKU_APP_NAME
 
 
 # A workflow is a set of rules for defining a collection of jobs and their run order. Workflows
