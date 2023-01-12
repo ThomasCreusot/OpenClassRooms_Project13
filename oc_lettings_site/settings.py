@@ -11,12 +11,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'fp$9^593hsriajg$_%=5trot9g!1qa@ew(o-1#@=&4%=hp46(s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['oc-lettings-tc.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
+
+# add "whitenoise.runserver_nostatic"
+# from https://whitenoise.evans.io/en/stable/django.html
 
 INSTALLED_APPS = [
     # 'oc_lettings_site.apps.OCLettingsSiteConfig',
@@ -25,13 +28,22 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+
+    "whitenoise.runserver_nostatic",
+
     'django.contrib.staticfiles',
     'lettings',
     'profiles',
 ]
 
+# https://whitenoise.evans.io/en/stable/django.html : 
+# add 'whitenoise.middleware.WhiteNoiseMiddleware',
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -112,3 +124,9 @@ STATIC_URL = '/static/'
 
 # https://stackoverflow.com/questions/48455469/youre-using-the-staticfiles-app-without-having-set-the-static-root-setting-to-a
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+# https://whitenoise.evans.io/en/stable/django.html
+# STATIC_ROOT = BASE_DIR / "staticfiles"
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
