@@ -253,7 +253,7 @@ jobs:
           name: Login to DockerHub
           command: docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_PASSWORD
 
-       Heroku authentication Method 1
+      # Heroku authentication Method 1
       - run:
           name: Install Heroku CLI
           command: |
