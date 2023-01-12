@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'profiles',
 ]
 
-# https://whitenoise.evans.io/en/stable/django.html : 
+# https://whitenoise.evans.io/en/stable/django.html
 # add 'whitenoise.middleware.WhiteNoiseMiddleware',
 
 MIDDLEWARE = [
@@ -129,4 +129,3 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # STATIC_ROOT = BASE_DIR / "staticfiles"
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
