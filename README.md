@@ -88,8 +88,7 @@ Utilisation de PowerShell, comme ci-dessus sauf :
 
 ### Récapitulatif haut niveau du fonctionnement du déploiement
 
-Le déploiement du code et de son environnement (sous forme d'une image Docker) sur Heroku est automatisé via le pipeline circleCI, décrit dans le fichier config.yml.
-Ce déploiement automatique se fait lorsque le code modifié est "push" vers github (branche master, uniquement)
+Le déploiement du code et de son environnement (Docker) sur Heroku est automatisé via le pipeline circleCI, qui est exécuté lors d'un push sur GitHub (branche master, uniquement). Le pipeline circleCI est décrit dans le fichier config.yml.
 
 Le déploiement peut également se faire manuellement (voir texte ci-dessous)
 
@@ -97,26 +96,33 @@ Le déploiement peut également se faire manuellement (voir texte ci-dessous)
 
 Pour un déploiement manuel :
 - Un compte Docker
-- docker CLI installée
+- Docker CLI installée
 - Un compte heroku et une application Heroku
-- heroku CLI installée (sinon remplacez la commande `heroku container:login` par `docker login --username=$HEROKU_USERNAME --password=$($HEROKU_API_KEY) registry.heroku.com`) lors de l'authentification pour le déploiement
+- Heroku CLI installée (sinon remplacez la commande `heroku container:login` par `docker login --username=$HEROKU_USERNAME --password=$($HEROKU_API_KEY) registry.heroku.com`) lors de l'authentification pour le déploiement
 - Un compte circleCI
 
 ### Étapes nécessaires au déploiement
 
 - Dans les parametres du projet circleCI, configurez les variables d'envionnement (project settings/environment variables) suivantes:
-  - $DOCKERHUB_USERNAME : le nom d'utilisateur de votre compte dockerhub
+  - $DOCKERHUB_USERNAME : le nom d'utilisateur de votre compte DockerHub
   - $DOCKERHUB_PASSWORD : votre mot de passe DockerHub
-  - $HEROKU_USERNAME : le nom d'utilisateur de votre compte heroku
+  - $HEROKU_USERNAME : le nom d'utilisateur de votre compte Heroku
   - $HEROKU_API_KEY : votre token Heroku, vous pouvez l'obtenir avec la commande `heroku auth:token`
-  - $HEROKU_APP_NAME : le nom de votre application heroku
-  - $DJANGO_APP_DOCKER_IMAGE_NAME : le nom que vous souhaitez donner à votre image docker
+  - $HEROKU_APP_NAME : le nom de votre application Heroku (que vous pouvez créer avec `heroku create`)
+  - $DJANGO_APP_DOCKER_IMAGE_NAME : le nom que vous souhaitez donner à votre image Docker
 
-Dans le terminal, executez les commandes suivantes :
+Avec le terminal, placez vous dans le dossier du projet (commande `cd`), puis executez les commandes suivantes :
 - Créez une image Docker avec la commande `docker build -t NOM_IMAGE .` (n'oubliez pas le point en fin de commande)
 - optionnel : vous pouvez tester le bon fonctionnement de l'application en local avec la commande `docker run --publish 8000:8000 NOM_IMAGE:latest`, l'adresse à visiter devrait s'afficher dans votre terminal
-- Authentifiez vous avec `heroku container:login`
-- `docker build -t registry.heroku.com/NOM_APPLICATION_HEROKU/web .` (n'oubliez pas le point en fin de commande)
-- `docker push registry.heroku.com/NOM_APPLICATION_HEROKU/web`
-- `heroku container:release web -a NOM_APPLICATION_HEROKU`
-- optionnel : vous pouvez tester le bon fonctionnement de l'application déployée avec : `heroku open`
+- Authentifiez vous avec `heroku container:login` (ou avec `heroku auth:token`, vous obtiendrez alors un TOKEN que vous pourrez utiliser avec la commande `docker login --username=YOUR_USERNAME --password=${YOUR_TOKEN} registry.heroku.com`)
+
+- Pour un premier déploiement mannuel :
+  - `heroku create` (si vous n'avez pas encore d'application Heroku)
+  - `heroku container:push web –app ${YOUR_APP_NAME}`
+  - `heroku container:release web -a nom_app_blooming_inlet_72637`
+
+- Pour le déploiement d'une mise à jour mannuel :
+  - `docker build -t registry.heroku.com/NOM_APPLICATION_HEROKU/web .` (n'oubliez pas le point en fin de commande)
+  - `docker push registry.heroku.com/NOM_APPLICATION_HEROKU/web`
+  - `heroku container:release web -a NOM_APPLICATION_HEROKU`
+  - optionnel : vous pouvez tester le bon fonctionnement de l'application déployée avec : `heroku open`

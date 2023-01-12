@@ -291,16 +291,20 @@ workflows:
       - build_and_test
       - build_docker:
           requires:
-            - build_and_test # only deploy if the build_and_test job has completed
+            - build_and_test
+          filters:
+            branches:
+              only: master
 
       - deploy_on_heroku:
           requires:
             - build_docker
-#          filters:
-#            branches:
-#              only: main # only deploy when on main
+          filters:
+            branches:
+              only: master
 
 
+#Configuration de l’execution de taches du pipeline en fonction de la branche concernée 
 
 # NOTES FOR THE END :
 # Environment variables containing the necessary secrets such as HEROKU_API_KEY and HEROKU_APP_NAME can be set up in the CircleCI web app. Learn more about environment variables. { class=”alert alert-info” }
