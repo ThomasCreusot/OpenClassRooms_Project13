@@ -47,6 +47,8 @@ RUN pip install -r requirements.txt
 #COPY . .
 COPY . /app
 
+RUN python manage.py collectstatic
+
 # https://hub.docker.com/_/python CMD [ "python", "./your-daemon-or-script.py" ]
 # https://docs.docker.com/language/python/build-images/ CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
 # Now, all we have to do is to tell Docker what command we want to run when our image is executed
