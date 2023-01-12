@@ -253,7 +253,7 @@ jobs:
           name: Login to DockerHub
           command: docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_PASSWORD
 
-      # Heroku authentication Method 1
+      # Heroku authentication Method 1 : works only if authenticated with internet browser
       - run:
           name: Install Heroku CLI
           command: |
@@ -263,11 +263,12 @@ jobs:
 
       - run: heroku container:login
 
-      # Heroku authentication Method 2
+      # Heroku authentication Method 2 : does not work
+      # source : https://devcenter.heroku.com/articles/container-registry-and-runtime
       # docker login --username=_ --password=$(heroku auth:token) registry.heroku.com
-      - run: docker login --username=$HEROKU_USERNAME --password=$HEROKU_API_KEY registry.heroku.com
+      #- run: docker login --username=$HEROKU_USERNAME --password=$HEROKU_API_KEY registry.heroku.com
 
-      # Heroku authentication Method 3
+      # Heroku authentication Method 3 : 
       #- run: heroku container:login --api-key $HEROKU_API_KEY  # --> Error: Unexpected arguments: --api-key,
 
       - run:
