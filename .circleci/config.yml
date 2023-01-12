@@ -265,7 +265,7 @@ jobs:
 
       # Heroku authentication Method 2
       # docker login --username=_ --password=$(heroku auth:token) registry.heroku.com
-      - run: docker login --username=$HEROKU_USERNAME --password=$($HEROKU_API_KEY) registry.heroku.com
+      - run: docker login --username=$HEROKU_USERNAME --password=$HEROKU_API_KEY registry.heroku.com
 
       # Heroku authentication Method 3
       #- run: heroku container:login --api-key $HEROKU_API_KEY  # --> Error: Unexpected arguments: --api-key,
