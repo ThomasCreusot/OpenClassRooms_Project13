@@ -126,3 +126,8 @@ Avec le terminal, placez vous dans le dossier du projet (commande `cd`), puis ex
   - `docker push registry.heroku.com/NOM_APPLICATION_HEROKU/web`
   - `heroku container:release web -a NOM_APPLICATION_HEROKU`
   - optionnel : vous pouvez tester le bon fonctionnement de l'application déployée avec : `heroku open`
+
+Si l'authentification heroku pose problème : 
+-Placez vous dans le dossier de l’application avec le terminal 
+-`heroku login`
+-vous obtenez un nouveau token heroku avec `heroku auth:token`, que vous pouvez utiliser comme variable d'environnement $HEROKU_API_KEY 
