@@ -142,4 +142,4 @@ Les étapes à suivre sont :
 - créer un projet sentry, selectionner le framework Django
 - le DSN vous est fourni, vous pouvez le communiquer dans le settings.py (sentry_sdk.init(dsn="NOUVEAU_DSN"))
 - vous avez accès aux services de sentry pour le présent projet, pour vérifier cela, rendez vous à l'url NOM_APPLICATION_HEROKU.herokuapp.com/sentry-debug/
-- une nouvelle erreur (division par zéro) devrait vous etre signalée au niveau du tableau de bord sentry (sentry.io)
+- une nouvelle erreur (division par zéro) devrait vous etre signalée au niveau du tableau de bord sentry (sentry.io).
