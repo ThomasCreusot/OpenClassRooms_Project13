@@ -131,3 +131,15 @@ Si l'authentification heroku pose problème :
 -Placez vous dans le dossier de l’application avec le terminal 
 -`heroku login`
 -vous obtenez un nouveau token heroku avec `heroku auth:token`, que vous pouvez utiliser comme variable d'environnement $HEROKU_API_KEY 
+
+### Journalisation sentry
+
+La journalisation a été mise en place avec la documentation sentry appropriée pour un projet Django et disponible à l'adresse suivante : https://docs.sentry.io/platforms/python/guides/django/ .
+
+Les étapes à suivre sont : 
+- créer un compte [sentry](https://sentry.io/signup/)
+- sentry-sdk est déja installé dans l'environnement virtuel du projet
+- créer un projet sentry, selectionner le framework Django
+- le DSN vous est fourni, vous pouvez le communiquer dans le settings.py (sentry_sdk.init(dsn="NOUVEAU_DSN"))
+- vous avez accès aux services de sentry pour le présent projet, pour vérifier cela, rendez vous à l'url NOM_APPLICATION_HEROKU.herokuapp.com/sentry-debug/
+- une nouvelle erreur (division par zéro) devrait vous etre signalée au niveau du tableau de bord sentry (sentry.io)
