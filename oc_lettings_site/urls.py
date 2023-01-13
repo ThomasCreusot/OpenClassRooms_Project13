@@ -14,7 +14,7 @@ from django.urls import include
 
 urlpatterns = [
     # https://docs.sentry.io/platforms/python/guides/django/
-    path('sentry-debug/', trigger_error),
+    path('sentry-debug/', views.trigger_error),
 
     path('', views.index, name='index'),
 
