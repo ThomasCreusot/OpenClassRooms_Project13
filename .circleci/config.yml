@@ -314,7 +314,7 @@ workflows:
             - build_and_test
           filters:
             branches:
-#              only: master
+              only: master
 
       - deploy_on_heroku:
           requires:
