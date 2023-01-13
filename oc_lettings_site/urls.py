@@ -12,8 +12,10 @@ from . import views
 # version with namespaces
 from django.urls import include
 
-
 urlpatterns = [
+    # https://docs.sentry.io/platforms/python/guides/django/
+    path('sentry-debug/', trigger_error),
+
     path('', views.index, name='index'),
 
     # initial version
