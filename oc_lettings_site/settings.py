@@ -134,7 +134,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-SENTRY_DSN=os.environ['SENTRY_DSN']
+SENTRY_DSN = os.environ['SENTRY_DSN']
 
 # https://docs.sentry.io/platforms/python/guides/django/
 sentry_sdk.init(
