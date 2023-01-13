@@ -1,5 +1,8 @@
 import os
 
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -132,10 +135,6 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
 # https://docs.sentry.io/platforms/python/guides/django/
-
-import sentry_sdk
-from sentry_sdk.integrations.django import DjangoIntegration
-
 sentry_sdk.init(
     dsn="https://b8b3d4ce38e146babbcc24a1d79f6c5e@o4504496367665152.ingest.sentry.io/4504496494215168",
     integrations=[DjangoIntegration()],
