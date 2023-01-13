@@ -47,7 +47,7 @@ RUN pip install -r requirements.txt
 #COPY . .
 COPY . /app
 
-#RUN python manage.py collectstatic --noinput --> does not work with SECRET_KEY
+RUN python manage.py collectstatic --noinput
 
 # https://hub.docker.com/_/python CMD [ "python", "./your-daemon-or-script.py" ]
 # https://docs.docker.com/language/python/build-images/ CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
