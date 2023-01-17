@@ -97,44 +97,83 @@ Le déploiement peut également se faire manuellement (voir texte ci-dessous)
 Pour un déploiement manuel :
 - Un compte Docker
 - Docker CLI installée
-- Un compte heroku et une application Heroku
-- Heroku CLI installée (sinon remplacez la commande `heroku container:login` par `docker login --username=$HEROKU_USERNAME --password=$($HEROKU_API_KEY) registry.heroku.com`) lors de l'authentification pour le déploiement
+- Un compte Heroku
+- Heroku CLI installée
 - Un compte circleCI
 
-### Étapes nécessaires au déploiement
+### Étapes nécessaires au déploiement d'une nouvelle application heroku
+
+Avec le terminal, placez vous dans le dossier du projet (commande `cd`), puis executez les commandes suivantes :
+- Créez une image Docker (n'oubliez pas le point en fin de commande) :
+>`docker build -t NOM_IMAGE .`
+
+- optionnel : vous pouvez tester le bon fonctionnement de l'image en local avec la commande suivante; l'adresse à visiter devrait s'afficher dans votre terminal. Vous pouvez ensuite arreter le conteneur correspondant (avec Docker Desktop par exemple):
+>`docker run --publish 8000:8000 NOM_IMAGE:latest`
+
+- Pensez à mettre à jour la variable d'environnement DJANGO_APP_DOCKER_IMAGE_NAME dans les parametres du projet sur circleCI si vous l'avez déja créé
+
+- Authentifiez vous (en remplaçant $DOCKERHUB_USERNAME et $DOCKERHUB_PASSWORD par leurs valeurs respectives) :
+>`docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_PASSWORD`
+- Taguez l'image et poussez la vers DockerHub :
+>`docker tag $DJANGO_APP_DOCKER_IMAGE_NAME:latest $DOCKERHUB_USERNAME/$DJANGO_APP_DOCKER_IMAGE_NAME:latest`
+>`docker push $DOCKERHUB_USERNAME/$DJANGO_APP_DOCKER_IMAGE_NAME:latest`
+
+- Authentifiez vous 
+>`heroku container:login`
+- Créez une application heroku (vous obtiendrez un nom généré aléatoirement pour cette application; la notation NOM_APP_HEROKU sera utilisée par la suite)
+>`heroku create`
+- Assurez vous d'être sur le bon "git remote" (les git remotes sont des versions de votre repository sur d'autres serveurs)
+>`heroku git:remote -a NOM_APP_HEROKU`
+
+- Vous pouvez désormais ajouter vos variables d’environnement sur heroku (partie settings/config vars de votre application) : ajoutez les variables SECRET_KEY et SENTRY_DSN :
+- clé SECRET_KEY : demandez la au responsable de l'application
+- clé SENTRY_DSN : voir partie "Journalisation sentry"  du présent document
+
+- Renommez l'application :
+>`heroku apps:rename NOUVEAU_NOM_APP_HEROKU --app ANCIEN_NOM_APP_HEROKU`
+>`git remote rm heroku`
+>`heroku git:remote -a NOUVEAU_NOM_APP_HEROKU`
+- Si vous choisissez un autre nom d'application que celui prévu par le dévelopeur originel, pensez à mettre à jour ALLOWED_HOST dans settings.py, ainsi que variable d’environnement HEROKU_APP_NAME sur circleCI si vous avez déja associé votre projet à cette plateforme
+
+- Authentifiez vous 
+>`docker login --username=_ --password=${YOUR_TOKEN} registry.heroku.com`
+- Procédez à la finalisation du déploiement :
+>`heroku container:push web --app NOM_APP_HEROKU`
+>`heroku container:release web -a NOM_APP_HEROKU`
+- Vous pouvez vérifier le bon fonctionnement de l'application avec la commande (l'application nécéssite que des "dynos" heroku soient disponible sur votre compte) : 
+>`heroku open`
+
+### Étapes nécessaires au déploiement d'une mise à jour d'une application heroku
+
+#### Déploiement mannuel
+
+- Pour le déploiement d'une mise à jour mannuel :
+> `docker build -t registry.heroku.com/NOM_APP_HEROKU/web .` (n'oubliez pas le point en fin de commande)
+> `docker push registry.heroku.com/NOM_APP_HEROKU/web`
+> `heroku container:release web -a NOM_APP_HEROKU`
+- Vous pouvez vérifier le bon fonctionnement de l'application avec la commande (l'application nécéssite que des "dynos" heroku soient disponible sur votre compte) : 
+>`heroku open`
+
+#### Déploiement automatique avec un pipeline circleCI
+
+Si votre code est poussé sur GitHub et que votre compte circleCI est associé à votre compte GitHub, vous devriez trouver votre projet sur le tableau de bord de circleCI et avoir la possibilité de cliquer un bouton "Set Up Project" à côté du nom de votre projet. Vous pouvez suivre la documentation pour initier votre pipeline (choix de l'option 'Fastest')
 
 - Dans les parametres du projet circleCI, configurez les variables d'envionnement (project settings/environment variables) suivantes:
   - $DOCKERHUB_USERNAME : le nom d'utilisateur de votre compte DockerHub
   - $DOCKERHUB_PASSWORD : votre mot de passe DockerHub
   - $HEROKU_USERNAME : le nom d'utilisateur de votre compte Heroku
-  - $HEROKU_API_KEY : votre token Heroku, vous pouvez l'obtenir avec la commande `heroku auth:token`
-  - $HEROKU_APP_NAME : le nom de votre application Heroku (que vous pouvez créer avec `heroku create`)
-  - $DJANGO_APP_DOCKER_IMAGE_NAME : le nom que vous souhaitez donner à votre image Docker
+  - $HEROKU_API_KEY : votre token Heroku, vous pouvez en obtenir un nouveau avec la commande `heroku auth:token`
+  - $HEROKU_APP_NAME : le nom de votre application Heroku
+  - $DJANGO_APP_DOCKER_IMAGE_NAME : le nom que vous avez donné à votre image Docker
+  - clé SECRET_KEY : demandez la au responsable de l'application
+  - clé SENTRY_DSN : voir partie "Journalisation sentry"  du présent document
 
-Avec le terminal, placez vous dans le dossier du projet (commande `cd`), puis executez les commandes suivantes :
-- Créez une image Docker avec la commande `docker build -t NOM_IMAGE .` (n'oubliez pas le point en fin de commande)
-- optionnel : vous pouvez tester le bon fonctionnement de l'application en local avec la commande `docker run --publish 8000:8000 NOM_IMAGE:latest`, l'adresse à visiter devrait s'afficher dans votre terminal
-- Authentifiez vous avec `heroku container:login` (ou avec `heroku auth:token`, vous obtiendrez alors un TOKEN que vous pourrez utiliser avec la commande `docker login --username=YOUR_USERNAME --password=${YOUR_TOKEN} registry.heroku.com`)
-
-- Pour un premier déploiement mannuel :
-  - `heroku create` (si vous n'avez pas encore d'application Heroku)
-  - `heroku container:push web –app ${YOUR_APP_NAME}`
-  - `heroku container:release web -a nom_app_blooming_inlet_72637`
-
-- Pour le déploiement d'une mise à jour mannuel :
-  - `docker build -t registry.heroku.com/NOM_APPLICATION_HEROKU/web .` (n'oubliez pas le point en fin de commande)
-  - `docker push registry.heroku.com/NOM_APPLICATION_HEROKU/web`
-  - `heroku container:release web -a NOM_APPLICATION_HEROKU`
-  - optionnel : vous pouvez tester le bon fonctionnement de l'application déployée avec : `heroku open`
-
-Si l'authentification heroku pose problème : 
--Placez vous dans le dossier de l’application avec le terminal 
--`heroku login`
--vous obtenez un nouveau token heroku avec `heroku auth:token`, que vous pouvez utiliser comme variable d'environnement $HEROKU_API_KEY 
-
-Dans les settings de votre application Heroku, ajoutez deux variables d'environnement (partie "config vars"):
-- clé SECRET_KEY ; valeur : demandez la au responsable de l'application
-- clé SENTRY_DSN ; valeur : voir partie "Journalisation sentry"  du présent document
+Une fois votre mise à jour réalisée :
+>`git add .`
+- Ajoutez un descriptif à votre commit
+>`commit -m "DESCRIPTIF_DE_VOTRE_COMMIT" `
+- Note: en l'état actuel, le piple circleCI sera executé indépendamment de la branche concernée pour la première étape (linting et tests); néanmoins, la construction de l'image Docker, sa poussée vers DockerHub et le déploiement ne se feront que si la branche concernée par le push est la branche "master"
+>`git push -u origin NOM_BRANCHE`
 
 ### Journalisation sentry
 
@@ -144,6 +183,6 @@ Les étapes à suivre sont :
 - créer un compte [sentry](https://sentry.io/signup/)
 - sentry-sdk est déja installé dans l'environnement virtuel du projet
 - créer un projet sentry, selectionner le framework Django
-- le DSN vous est fourni, vous pouvez le communiquer dans le settings.py (sentry_sdk.init(dsn="NOUVEAU_DSN")). Une meilleur pratique consiste a ajouter ce dsn comme variable d'environnement sur le site heroku (voir partie "Étapes nécessaires au déploiement" du présent document)
+- le DSN vous est fourni, vous pouvez ajouter ce dsn comme variable d'environnement sur dans les settings de votre application sur le site heroku, ainsi que dans les settings de votre projet sur le site circleCI (voir partie "Étapes nécessaires au déploiement" du présent document)
 - vous avez accès aux services de sentry pour le présent projet, pour vérifier cela, rendez vous à l'url NOM_APPLICATION_HEROKU.herokuapp.com/sentry-debug/
 - une nouvelle erreur (division par zéro) devrait vous etre signalée au niveau du tableau de bord sentry (sentry.io).
