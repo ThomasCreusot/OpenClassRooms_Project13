@@ -175,7 +175,7 @@ sentry_sdk.init(
 )
 
 # https://django-environ.readthedocs.io/en/latest/quickstart.html
-#CACHES = {
+# CACHES = {
 #    # Read os.environ['CACHE_URL'] and raises
 #    # ImproperlyConfigured exception if not found.
 #    #
@@ -184,4 +184,4 @@ sentry_sdk.init(
 #
 #    # read os.environ['REDIS_URL']
 #    'redis': env.cache_url('REDIS_URL')
-#}
+# }
