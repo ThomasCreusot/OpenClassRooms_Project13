@@ -1,11 +1,22 @@
 import os
-
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
+
+import environ
+
+# https://django-environ.readthedocs.io/en/latest/quickstart.html
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# https://django-environ.readthedocs.io/en/latest/quickstart.html
+# Take environment variables from .env file
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+DEBUG = env('DEBUG')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -13,12 +24,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 # https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 # SECRET_KEY = os.environ['SECRET_KEY'] --> does not work with collectstatic in dockerfile
-SECRET_KEY = os.environ.get("SECRET_KEY")
+# SECRET_KEY = os.environ.get("SECRET_KEY")
+# https://django-environ.readthedocs.io/en/latest/quickstart.html
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['oc-lettings-tc.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['oc-lettings-tc.herokuapp.com', '127.0.0.1', 'oc-lettings-tc-demo.herokuapp.com']
 
 
 # Application definition
@@ -135,7 +148,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-SENTRY_DSN = os.environ['SENTRY_DSN']
+# SENTRY_DSN = os.environ['SENTRY_DSN']
+# SENTRY_DSN = os.environ.get("SENTRY_DSN")
+# https://django-environ.readthedocs.io/en/latest/quickstart.html
+SENTRY_DSN = env('SENTRY_DSN')
 
 # https://docs.sentry.io/platforms/python/guides/django/
 sentry_sdk.init(
@@ -157,3 +173,15 @@ sentry_sdk.init(
     # something more human-readable.
     # release="myapp@1.0.0",
 )
+
+# https://django-environ.readthedocs.io/en/latest/quickstart.html
+#CACHES = {
+#    # Read os.environ['CACHE_URL'] and raises
+#    # ImproperlyConfigured exception if not found.
+#    #
+#    # The cache() method is an alias for cache_url().
+#    'default': env.cache(),
+#
+#    # read os.environ['REDIS_URL']
+#    'redis': env.cache_url('REDIS_URL')
+#}
