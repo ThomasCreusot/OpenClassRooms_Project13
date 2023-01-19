@@ -1,12 +1,14 @@
+# https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
+# https://whitenoise.evans.io/en/stable/django.html
+# https://django-environ.readthedocs.io/en/latest/quickstart.html
+
 import os
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
-
 import environ
 
 # https://django-environ.readthedocs.io/en/latest/quickstart.html
 env = environ.Env(
-    # set casting, default value
     DEBUG=(bool, False)
 )
 
@@ -18,14 +20,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 DEBUG = env('DEBUG')
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-# https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
-# SECRET_KEY = os.environ['SECRET_KEY'] --> does not work with collectstatic in dockerfile
-# SECRET_KEY = os.environ.get("SECRET_KEY")
-# https://django-environ.readthedocs.io/en/latest/quickstart.html
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -33,11 +27,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['oc-lettings-tc.herokuapp.com', '127.0.0.1', 'oc-lettings-tc-demo.herokuapp.com']
 
-
 # Application definition
-
-# add "whitenoise.runserver_nostatic"
-# from https://whitenoise.evans.io/en/stable/django.html
 
 INSTALLED_APPS = [
     # 'oc_lettings_site.apps.OCLettingsSiteConfig',
@@ -46,22 +36,15 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-
-    "whitenoise.runserver_nostatic",
-
+    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'lettings',
     'profiles',
 ]
 
-# https://whitenoise.evans.io/en/stable/django.html
-# add 'whitenoise.middleware.WhiteNoiseMiddleware',
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-
     'whitenoise.middleware.WhiteNoiseMiddleware',
-
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -148,8 +131,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# SENTRY_DSN = os.environ['SENTRY_DSN']
-# SENTRY_DSN = os.environ.get("SENTRY_DSN")
 # https://django-environ.readthedocs.io/en/latest/quickstart.html
 SENTRY_DSN = env('SENTRY_DSN')
 
